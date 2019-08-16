@@ -1,3 +1,5 @@
+name: Ansible Control Machine
+version: 1.0
 formatVersion: 1
 inputs:
   slack_webhook:
