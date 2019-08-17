@@ -1,0 +1,2 @@
+For blueprints, please provide details about required endpoints used and environmental particulars that will need to be updated to work in other environments.
+If you are using the CI workspace, please link to the image you use on Dockerhub.
