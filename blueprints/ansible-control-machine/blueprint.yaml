@@ -7,12 +7,17 @@ inputs:
     description: A webhook for Slack notifications. This will be used to send the public key details of the generated keypair that ansible will use to connect to remote hosts.
   ansible_username:
     type: string
+    description: The username for the ansible user account
+    default: ansible
   ansible_user_password:
     type: string
+    default: The password for the ansible user. The connection from Cloud Assembly currently uses password based auth, so this is a mandatory requirement.
   ansible_vault_password:
     type: string
+    description: The password that will be written to the Vault file.
   ansible_ssh_key:
     type: string
+    description: The public half of SSH key used for authentication to this box. Not to be confused with the SSH key that will be used by the ansible user account to SSH into managed instances.
 resources:
   ansible_control_machine:
     type: Cloud.Machine
@@ -40,12 +45,12 @@ resources:
                 hosts: localhost
                 gather_facts: true
                 vars:
-                  ansible_username: "${inputs.ansible_username}"
-                  ansible_user_password: "${inputs.ansible_user_password}"
-                  ansible_vault_password: "${inputs.ansible_vault_password}"
+                  ansible_username: "${input.ansible_username}"
+                  ansible_user_password: "${input.ansible_user_password}"
+                  ansible_vault_password: "${input.ansible_vault_password}"
                   slack_notification_content: "{{ lookup('file', '/home/ansible/.ssh/id_rsa.pub') }}"
                   slack_notification_webhook: "${input.slack_webhook}"
-                  ansible_ssh_key: "${inputs.ansible_ssh_key}"
+                  ansible_ssh_key: "${input.ansible_ssh_key}"
                 tasks:
                   - name: Create Ansible User
                     become: true
