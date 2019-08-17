@@ -11,7 +11,7 @@ inputs:
     default: ansible
   ansible_user_password:
     type: string
-    default: The password for the ansible user. The connection from Cloud Assembly currently uses password based auth, so this is a mandatory requirement.
+    description: The password for the ansible user. The connection from Cloud Assembly currently uses password based auth, so this is a mandatory requirement.
   ansible_vault_password:
     type: string
     description: The password that will be written to the Vault file.
