@@ -1,0 +1,45 @@
+---
+project: 10FoD Traditional
+kind: PIPELINE
+name: bitnami-tomcat
+enabled: true
+description: Pipeline to deploy bitnami tomcat to aws
+concurrency: 10
+ciWorkspace:
+  endpoint: ''
+  image: ''
+  registry: ''
+  path: ''
+  cache:
+  - ''
+stageOrder:
+- Stage0
+stages:
+  Stage0:
+    taskOrder:
+    - Task0
+    tasks:
+      Task0:
+        type: Blueprint
+        endpoints:
+          gitServer: cloud-automation-content
+        input:
+          blueprint: ''
+          filepath: blueprints/bitnami-tomcat/blueprint.yaml
+          action: CreateDeployment
+          deploymentName: ''
+          version: ''
+          parameters: {
+            user: vmware,
+            sshkey: '${var.ssh-cloud-pub-key}',
+            hostname1: bitnami-tomcat,
+            SelectCloud: 'env:aws'
+          }
+notifications:
+  email:
+  - subject: bitnami-tomcat deployment
+    endpoint: Codestream-Default-Email
+    event: SUCCESS
+    body: Deployment notification for bitnami-tomcat
+    to:
+    - someonej@somewhere.com

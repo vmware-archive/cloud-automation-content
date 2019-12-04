@@ -1,0 +1,45 @@
+---
+project: 10FoD Traditional
+kind: PIPELINE
+name: bitnami-artifactory
+enabled: true
+description: Pipeline to deploy bitnami-artifactory to aws
+concurrency: 10
+ciWorkspace:
+  endpoint: ''
+  image: ''
+  registry: ''
+  path: ''
+  cache:
+  - ''
+stageOrder:
+- Stage0
+stages:
+  Stage0:
+    taskOrder:
+    - Task0
+    tasks:
+      Task0:
+        type: Blueprint
+        endpoints:
+          gitServer: cloud-automation-content
+        input:
+          blueprint: ''
+          filepath: blueprints/bitnami-artifactory/blueprint.yaml
+          action: CreateDeployment
+          deploymentName: ''
+          version: ''
+          parameters: {
+            user: vmware,
+            sshkey: '${var.ssh-cloud-pub-key}',
+            hostname1: bitnami-artifactory,
+            SelectCloud: 'env:aws'
+          }
+notifications:
+  email:
+  - event: SUCCESS
+    subject: bitnami-artifactory deployment
+    endpoint: Codestream-Default-Email
+    body: Deployment notification for bitnami-artifactory
+    to:
+    - someonej@somewhere.com
