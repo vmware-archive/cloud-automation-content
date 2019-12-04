@@ -42,4 +42,4 @@ notifications:
     event: SUCCESS
     body: Deployment notification for bitnami-tomcat
     to:
-    - someonej@somewhere.com
+    - someone@somewhere.com

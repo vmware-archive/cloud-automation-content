@@ -42,4 +42,4 @@ notifications:
     endpoint: Codestream-Default-Email
     body: Deployment notification for bitnami-artifactory
     to:
-    - someonej@somewhere.com
+    - someone@somewhere.com
