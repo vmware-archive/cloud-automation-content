@@ -1,0 +1,45 @@
+---
+project: 10FoD Traditional
+kind: PIPELINE
+name: ubuntu-docker-host
+enabled: true
+description: Pipeline to deploy ubuntu-docker-host to aws
+concurrency: 10
+ciWorkspace:
+  endpoint: docker-host-aws
+  image: jameswwirth/vra-ci-task
+  registry: docker-hub-vra-ci-task
+  path: ''
+  cache:
+  - ''
+stageOrder:
+- Stage0
+stages:
+  Stage0:
+    taskOrder:
+    - Task0
+    tasks:
+      Task0:
+        type: Blueprint
+        endpoints:
+          gitServer: cloud-automation-content
+        input:
+          blueprint: ''
+          filepath: blueprints/ubuntu-docker-host-aws/blueprint.yaml
+          action: CreateDeployment
+          deploymentName: ''
+          version: ''
+          parameters: {
+            user: vmware,
+            sshkey: '${var.ssh-cloud-pub-key}',
+            hostname1: ubuntu-docker-host,
+            SelectCloud: 'env:aws'
+          }
+notifications:
+  email:
+  - event: SUCCESS
+    subject: ubuntu-docker-host deployment
+    endpoint: Codestream-Default-Email
+    body: Deployment notification for ubuntu-docker-host
+    to:
+    - someone@somewhere.com
