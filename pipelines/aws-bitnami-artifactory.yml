@@ -1,5 +1,5 @@
 ---
-project: 10FoD Traditional
+project: pset-devops
 kind: PIPELINE
 name: bitnami-artifactory
 enabled: true

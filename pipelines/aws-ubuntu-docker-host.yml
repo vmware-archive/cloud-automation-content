@@ -1,5 +1,5 @@
 ---
-project: 10FoD Traditional
+project: pset-devops
 kind: PIPELINE
 name: ubuntu-docker-host
 enabled: true
