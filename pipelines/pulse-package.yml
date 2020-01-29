@@ -1,0 +1,144 @@
+---
+project: pset-devops
+kind: PIPELINE
+name: pulse-package
+icon: organization,left, is-warm-grey
+enabled: true
+description: Build and upload pulse packages
+concurrency: 10
+options: [
+  DOCKER_TRIGGER]
+workspace:
+  endpoint: docker-host-aws
+  image: jameswwirth/vra-ci-task
+  registry: docker-hub-vra-ci-task
+  path: /working
+  limits:
+    cpu: 1.0
+    memory: 512
+stageOrder:
+- Stage0
+stages:
+  Stage0:
+    taskOrder:
+    - build-package,get-pulse-token
+    - upload-package
+    - create-pulse-campaign
+    tasks:
+      build-package:
+        type: CI
+        input:
+          steps:
+          - '#!/bin/bash'
+          - '# Install Dependencies (not necessary if build container has them)'
+          - '# apt-get update'
+          - python --version
+          - '# apt-get install -y git python python-pip'
+          - pip install pyyaml
+          - ''
+          - '#Configure Git Deployment Keys'
+          - mkdir ~/.ssh/
+          - cat <<EOT >> ~/.ssh/id_rsa.pub
+          - ${var.github-deploy-public-key}
+          - EOT
+          - 'cat <<EOT >> ~/.ssh/id_rsa '
+          - ${var.github-deploy-private-key}
+          - EOT
+          - cat <<EOT >> ~/.ssh/config
+          - Host *
+          - '    StrictHostKeyChecking no'
+          - EOT
+          - chmod 600 ~/.ssh/id_rsa
+          - chmod 600 ~/.ssh/id_rsa.pub
+          - '# eval "$(ssh-agent -s)"'
+          - '# ssh-add -k ~/.ssh/id_rsa'
+          - ''
+          - '# Download the Pulse pacakge CLI'
+          - 'mkdir pulse-package '
+          - cd pulse-package
+          - wget https://iotc005.vmware.com/api/iotc-cli/package-cli.zip
+          - unzip package-cli.zip
+          - chmod 755 linux_amd64/package-cli
+          - ''
+          - '# Download the peoplecounter repository'
+          - git clone git@github.com:jameswwirth/people-counter-ingestion-service.git
+          - cd people-counter-ingestion-service/build
+          - pwd
+          - ls
+          - ''
+          - '# Add the build number to the version'
+          - chmod 755 ./people-counter-ingestion-service-spec.yml
+          - chmod 755 ./version.py
+          - python ./version.py people-counter-ingestion-service-spec.yml ${executionIndex}
+          - ''
+          - '# Build the package'
+          - ../../linux_amd64/package-cli package create people-counter-ingestion-service-spec.yml
+          - ls
+          - ''
+          - '# Export the package file name (it''s not really essential to do this in this step)'
+          - ''
+          - name=$(find -name "*.iotcp")
+          - export PACKAGE_FILENAME=$name
+          - echo $PACKAGE_FILENAME
+          - ''
+          - export PACKAGE_FILENAME="people_counter_ingestion_service-1.0.0-"${executionIndex}".iotcp"
+          - echo $PACKAGE_FILENAME
+          - ''
+          export:
+          - PACKAGE_FILENAME
+          artifacts: [
+            ]
+          process: [
+            ]
+      get-pulse-token:
+        type: REST
+        input:
+          action: get
+          url: ${var.pulse-instance}/api/tokens
+          headers:
+            Accept: application/json;api-version=2.0
+            Content-Type: application/json
+            x-org-domain-name: vmwareinternal
+            Authorization: Basic ${var.james-pulse-cred}
+          payload: ''
+      create-pulse-campaign:
+        type: REST
+        input:
+          action: post
+          url: https://${var.pulse-instance}/api/campaigns/
+          headers:
+            Accept: application/json;api-version=2.0
+            Content-Type: application/json
+            Authorization: Bearer ${Stage0.get-pulse-token.output.responseBody.accessToken}
+          payload: |-
+            {
+            "name": "jw-code-stream-build-${executionIndex}"
+            }
+      upload-package:
+        type: CI
+        input:
+          steps:
+          - '#!/bin/bash'
+          - pwd
+          - ls
+          - cd pulse-package/people-counter-ingestion-service/build
+          - pwd
+          - ls
+          - echo ${Stage0.build-package.output.exports.PACKAGE_FILENAME}
+          - curl -X POST \
+          - '    https://${var.pulse-instance}/api/programs \'
+          - '    -H "Accept: application/json;api-version=2.0" \'
+          - '    -H ''Accept-Encoding: gzip, deflate'' \'
+          - '    -H "Authorization:Bearer "${Stage0.get-pulse-token.output.responseBody.accessToken} \'
+          - '    -H ''Cache-Control: no-cache'' \'
+          - '    -H ''Connection: keep-alive'' \'
+          - '    -H ''Content-Type: multipart/form-data'' \'
+          - '    -H "Host: "${var.pulse-instance} \'
+          - '    -H ''cache-control: no-cache'' \'
+          - '    -F file=@${Stage0.build-package.output.exports.PACKAGE_FILENAME}'
+          export: [
+            ]
+          artifacts: [
+            ]
+          process: [
+            ]
