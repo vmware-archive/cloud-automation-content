@@ -1,0 +1,45 @@
+formatVersion: 1
+inputs: {}
+resources:
+  VEBA:
+    type: Cloud.vSphere.Machine
+    metadata:
+      layoutPosition:
+        - 0
+        - 0
+    properties:
+      imageRef: 'http://cava-n-80-126.eng.vmware.com:9000/images/vCenter_Event_Broker_Appliance_0.3.0.ova'
+      cpuCount: 4
+      totalMemoryMB: 12288
+      ovfProperties:
+        - key: guestinfo.hostname
+          value: '${resource.VEBA.resourceName}'
+        - key: guestinfo.root_password
+          value: VMware1!
+        - key: guestinfo.ipaddress
+          value: '${self.networks[0].address}'
+        - key: guestinfo.gateway
+          value: '${Cloud_vSphere_Network_1.gatewayAddress}'
+        - key: guestinfo.domain"
+          value: '${Cloud_vSphere_Network_1.domain}'
+        - key: searchpath
+          value: '${substring(resource.Cloud_vSphere_Network_1.dnsSearchDomains, 1, length(resource.Cloud_vSphere_Network_1.dnsSearchDomains)-1)}'
+        - key: guestinfo.dns
+          value: '${substring(resource.Cloud_vSphere_Network_1.dnsServerAddresses, 1, length(resource.Cloud_vSphere_Network_1.dnsServerAddresses)-1)}'
+        - key: guestinfo.netmask
+          value: 23 (255.255.254.0)
+      networks:
+        - name: '${resource.Cloud_vSphere_Network_1.name}'
+          network: '${resource.Cloud_vSphere_Network_1.id}'
+          assignment: static
+  Cloud_vSphere_Network_1:
+    type: Cloud.Network
+    metadata:
+      layoutPosition:
+        - 1
+        - 0
+    properties:
+      name: vRA_Network
+      networkType: existing
+      constraints:
+        - tag: static-ip
