@@ -1,13 +1,13 @@
 formatVersion: 1
 inputs:
   vcenterServer:
-    description: The vCenter to Connect VEBA to
+    description: 'The vCenter to Connect VEBA to'
     type: string
   vcenterUsername:
-    description: vCenter Username
+    description: 'vCenter Username'
     type: string
   vcenterPassword:
-    description: vCenter Password
+    description: 'vCenter Password'
     type: string
   vcenterDisableTLSVerification:
     description: Disable vCenter TLS
