@@ -13,6 +13,9 @@ inputs:
     description: Disable vCenter TLS
     type: string
     default: 'True'
+  openfaasPassword:
+    description: 'admin password for OpenFaaS UI'
+    type: string
   deploymentImage:
     description: 'http address of the VEBA ova file'
     type: string
@@ -50,8 +53,10 @@ resources:
           value: '${input.vcenterUsername}'
         - key: guestinfo.vcenter_password
           value: '${input.vcenterPassword}'
-      - key: guestinfo.vcenter_disable_tls_verification
-        value: '${input.vcenterDisableTLSVerification}'
+        - key: guestinfo.vcenter_disable_tls_verification
+          value: '${input.vcenterDisableTLSVerification}'
+        - key: guestinfo.openfaas_password
+          value: '${input.openfaas_password}'  
       networks:
         - name: '${resource.Cloud_vSphere_Network_1.name}'
           network: '${resource.Cloud_vSphere_Network_1.id}'
