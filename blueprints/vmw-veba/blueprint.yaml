@@ -56,7 +56,7 @@ resources:
         - key: guestinfo.vcenter_disable_tls_verification
           value: '${input.vcenterDisableTLSVerification}'
         - key: guestinfo.openfaas_password
-          value: '${input.openfaas_password}'  
+          value: '${input.openfaasPassword}'  
       networks:
         - name: '${resource.Cloud_vSphere_Network_1.name}'
           network: '${resource.Cloud_vSphere_Network_1.id}'
