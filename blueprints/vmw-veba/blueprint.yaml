@@ -13,6 +13,9 @@ inputs:
     description: Disable vCenter TLS
     type: string
     default: 'True'
+  deploymentImage:
+    description: 'http address of the VEBA ova file'
+    type: string
 resources:
   VEBA:
     type: Cloud.vSphere.Machine
@@ -21,7 +24,7 @@ resources:
         - 0
         - 0
     properties:
-      imageRef:
+      imageRef: '${input.deploymentImage}'
       cpuCount: 4
       totalMemoryMB: 12288
       ovfProperties:
