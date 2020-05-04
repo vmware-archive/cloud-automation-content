@@ -1,5 +1,18 @@
 formatVersion: 1
-inputs: {}
+inputs:
+  vcenterServer:
+    description: The vCenter to Connect VEBA to
+    type: string
+  vcenterUsername:
+    description: vCenter Username
+    type: string
+  vcenterPassword:
+    description: vCenter Password
+    type: string
+  vcenterDisableTLSVerification:
+    description: Disable vCenter TLS
+    type: string
+    default: 'True'
 resources:
   VEBA:
     type: Cloud.vSphere.Machine
@@ -8,26 +21,34 @@ resources:
         - 0
         - 0
     properties:
-      imageRef: 'http://cava-n-80-126.eng.vmware.com:9000/images/vCenter_Event_Broker_Appliance_0.3.0.ova'
+      imageRef:
       cpuCount: 4
       totalMemoryMB: 12288
       ovfProperties:
         - key: guestinfo.hostname
           value: '${resource.VEBA.resourceName}'
-        - key: guestinfo.root_password
-          value: VMware1!
         - key: guestinfo.ipaddress
           value: '${self.networks[0].address}'
+        - key: guestinfo.netmask
+          value: 23 (255.255.254.0)
         - key: guestinfo.gateway
           value: '${Cloud_vSphere_Network_1.gatewayAddress}'
+        - key: guestinfo.dns
+          value: '${substring(resource.Cloud_vSphere_Network_1.dnsServerAddresses, 1, length(resource.Cloud_vSphere_Network_1.dnsServerAddresses)-1)}'
         - key: guestinfo.domain"
           value: '${Cloud_vSphere_Network_1.domain}'
         - key: searchpath
           value: '${substring(resource.Cloud_vSphere_Network_1.dnsSearchDomains, 1, length(resource.Cloud_vSphere_Network_1.dnsSearchDomains)-1)}'
-        - key: guestinfo.dns
-          value: '${substring(resource.Cloud_vSphere_Network_1.dnsServerAddresses, 1, length(resource.Cloud_vSphere_Network_1.dnsServerAddresses)-1)}'
-        - key: guestinfo.netmask
-          value: 23 (255.255.254.0)
+        - key: guestinfo.root_password
+          value: VMware1!
+        - key: guestinfo.vcenter_server
+          value: '${input.vcenterServer}'
+        - key: guestinfo.vcenter_username
+          value: '${input.vcenterUsername}'
+        - key: guestinfo.vcenter_password
+          value: '${input.vcenterPassword}'
+      - key: guestinfo.vcenter_disable_tls_verification
+        value: '${input.vcenterDisableTLSVerification}'
       networks:
         - name: '${resource.Cloud_vSphere_Network_1.name}'
           network: '${resource.Cloud_vSphere_Network_1.id}'
