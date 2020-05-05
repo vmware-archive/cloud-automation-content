@@ -1,9 +1,6 @@
 formatVersion: 1
 inputs:
-  #networkName:
-  #  description: 'Network to connect the VEAB to'
-  #  type: string
-  hostname:
+  vebaHostname:
     description: 'Hostname of the VEBA appliance'
     type: string
   rootPassword:
@@ -40,7 +37,7 @@ resources:
       totalMemoryMB: 12288
       ovfProperties:
         - key: guestinfo.hostname
-          value: '${input.hostname}'
+          value: '${input.vebaHostname}'
         - key: guestinfo.ipaddress
           value: '${self.networks[0].address}'
         - key: guestinfo.netmask
@@ -79,7 +76,7 @@ resources:
         - 1
         - 0
     properties:
-      # name: '${input.networkName}'
+      name: vRA_Network
       networkType: existing
       constraints:
         - tag: static-ip
