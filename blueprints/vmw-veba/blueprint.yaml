@@ -1,5 +1,8 @@
 formatVersion: 1
 inputs:
+  networkName:
+    description: 'Network to connect the VEAB to'
+    type: string
   hostname:
     description: 'Hostname of the VEBA appliance'
     type: string
@@ -74,7 +77,7 @@ resources:
         - 1
         - 0
     properties:
-      name: vRA_Network
+      name: '${input.networkName}'
       networkType: existing
       constraints:
         - tag: static-ip
