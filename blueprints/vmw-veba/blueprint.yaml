@@ -1,10 +1,12 @@
 formatVersion: 1
 inputs:
-  networkName:
-    description: 'Network to connect the VEAB to'
-    type: string
+  #networkName:
+  #  description: 'Network to connect the VEAB to'
+  #  type: string
   hostname:
     description: 'Hostname of the VEBA appliance'
+    type: string
+  rootPassword:
     type: string
   vcenterServer:
     description: 'The vCenter to Connect VEBA to'
@@ -26,7 +28,7 @@ inputs:
     description: 'http address of the VEBA ova file'
     type: string
 resources:
-  VEBA:
+  Cloud_vSphere_Machine_1:
     type: Cloud.vSphere.Machine
     metadata:
       layoutPosition:
@@ -52,7 +54,7 @@ resources:
         - key: searchpath
           value: '${substring(resource.Cloud_vSphere_Network_1.dnsSearchDomains, 1, length(resource.Cloud_vSphere_Network_1.dnsSearchDomains)-1)}'
         - key: guestinfo.root_password
-          value: VMware1!
+          value: '${input.rootPassword}'
         - key: guestinfo.vcenter_server
           value: '${input.vcenterServer}'
         - key: guestinfo.vcenter_username
@@ -77,7 +79,7 @@ resources:
         - 1
         - 0
     properties:
-      name: '${input.networkName}'
+      # name: '${input.networkName}'
       networkType: existing
       constraints:
         - tag: static-ip
