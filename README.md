@@ -13,4 +13,4 @@ as an open-source patch. For more detailed information, refer to [CONTRIBUTING.m
 In order to work with the integration, blueprints will need to be named `blueprint.yaml`. Please place any blueprints within their own folder (you can review existing samples for the structure) and include a readme to explain any nuances of the content you are providing.
 In order to provide content that is highly portable, please parameterise and leverage inputs wherever possibly calling out any exceptions to this.
 
-For any questions about contributing, please contact Grant Orchard or Cody De Arkland.
+For any questions about contributing, please contact Anderson Duboc or James Wirth. 
