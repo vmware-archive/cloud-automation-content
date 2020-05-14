@@ -1,0 +1,45 @@
+---
+project: pset-devops
+kind: PIPELINE
+name: openfaas-node
+enabled: true
+description: Pipeline to deploy openfaas-node to aws
+concurrency: 10
+ciWorkspace:
+  endpoint:
+  image:
+  registry:
+  path: ''
+  cache:
+  - ''
+stageOrder:
+- Stage0
+stages:
+  Stage0:
+    taskOrder:
+    - Task0
+    tasks:
+      Task0:
+        type: Blueprint
+        endpoints:
+          gitServer: cloud-automation-content
+        input:
+          blueprint: ''
+          filepath: blueprints/aws-openfaas-node/blueprint.yaml
+          action: CreateDeployment
+          deploymentName: ''
+          version: ''
+          parameters: {
+            user: vmware,
+            sshkey: '${var.ssh-cloud-pub-key}',
+            hostname1: openfaas-node,
+            SelectCloud: 'env:aws'
+          }
+notifications:
+  email:
+  - event: SUCCESS
+    subject: openfaas-node deployment
+    endpoint: Codestream-Default-Email
+    body: Deployment notification for openfaas-node
+    to:
+    - someone@somewhere.com
