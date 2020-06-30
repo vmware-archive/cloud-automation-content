@@ -8,7 +8,7 @@ As part of the deployment the VEBA is connected to an existing vCenter.
 
 ### Usage:
 This Blueprint can be launched manually but it's often preferable to launch via
-Code Stream such that the inputs can be added in the COde Stream pipeline rather
+Code Stream such that the inputs can be added in the Code Stream pipeline rather
 than having to type them in each time.
 
 Note: You may need to make some tweaks to the networking settings depending on
