@@ -1,3 +1,5 @@
+#VMware has ended active development of this project, this repository will no longer be updated.
+
 # Cloud Automation Sample Content
 
 This repository has been put together to allow for easy sharing of content between Cloud Automation Services environments, and vRealize Automation environments leveraging the native Github integration for content import.
